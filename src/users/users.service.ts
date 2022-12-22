@@ -22,9 +22,12 @@ export class UsersService {
     ){}
     
     async findAll(listUserDto: PaginatedRequestDto<ListUserDto>): Promise<any> {
-        const queryBuilder = this._userRepository.createQueryBuilder("user");
+        const queryBuilder = this._userRepository.createQueryBuilder()
+                                .select(["us.uid as uid","us.name as name","us.username as username","role.role_title"])
+                                .from("users", "us")
+                                .innerJoinAndSelect("roles", "role","role.role_id = us.role_id");
         const itemCount = await queryBuilder.getCount();
-        let { entities } = await queryBuilder.getRawAndEntities();
+        let  entities  = await queryBuilder.getRawMany();
         return entities;
     }
 
@@ -49,7 +52,7 @@ export class UsersService {
                             }
             const token = this.jwtService.sign(payload, this.jwtConfigService.createJwtSignOptions())
             const updatedUser = this._userRepository.update({uid: user.uid}, {access_token: token});
-            return {name: user.name, last_login_time: user.last_login_time, access_token: token};
+            return {name: user.name, role_id: user.role_id, last_login_time: user.last_login_time, access_token: token};
         }
     }
 
