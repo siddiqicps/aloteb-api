@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtConfigService } from 'src/common_services/jwt-config-service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { DeleteUserDto } from './dtos/delete-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -64,6 +65,25 @@ export class UsersService {
         
         const savedUser = this._userRepository.save(user);
         return savedUser;
+    }
+
+    async updateUser(updateUserDto: UpdateUserDto): Promise<any> {
+        const saltRounds = 10;
+        const user: User = new User();
+        user.name = updateUserDto?.name
+        user.email = updateUserDto?.email;
+        user.username = updateUserDto?.username
+        user.password = updateUserDto?.password ? bcrypt.hashSync(updateUserDto?.password, saltRounds) : undefined;
+        user.role_id = updateUserDto?.role_id
+        user.contact_no = updateUserDto?.contact_no
+        
+        const updatedUser = this._userRepository
+                            .createQueryBuilder('users')
+                            .update(User)
+                            .set(user)
+                            .where("uid = :id", { id: updateUserDto?.uid })
+                            .execute()
+        return updatedUser;
     }
 
     async deleteUser(deleteUserDto: DeleteUserDto): Promise<any> {

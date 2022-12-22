@@ -9,6 +9,9 @@ import { AuthorizeMiddleware } from './middlewares/authorize/authorize.middlewar
 import { JwtService } from '@nestjs/jwt';
 import { RequestMethod } from '@nestjs/common/enums';
 import { JwtConfigService } from './common_services/jwt-config-service';
+import { OrdersModule } from './orders/orders.module';
+import { Order } from './entity/Order';
+import { RoleAction } from './entity/RoleAction';
 
 @Module({
   imports: [
@@ -22,7 +25,7 @@ import { JwtConfigService } from './common_services/jwt-config-service';
       logging: true,
       synchronize: false,
       entities: [
-          User
+          User, Order, RoleAction
       ],
       subscribers: [
           "subscriber/*.js"
@@ -31,7 +34,8 @@ import { JwtConfigService } from './common_services/jwt-config-service';
           "migration/*.js"
       ],
   }),
-    UsersModule
+    UsersModule,
+    OrdersModule
   ],
   controllers: [AppController],
   providers: [AppService, AuthService, JwtService, JwtConfigService],

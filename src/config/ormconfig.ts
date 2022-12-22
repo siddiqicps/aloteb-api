@@ -1,3 +1,4 @@
+import { Order } from "src/entity/Order";
 import { RoleAction } from "src/entity/RoleAction";
 import { User } from "src/entity/User";
 import { DataSource } from "typeorm";
@@ -14,7 +15,7 @@ const connectDB =  new DataSource({
       logging: true,
       synchronize: false,
       entities: [
-          User, RoleAction
+          User, RoleAction, Order
       ],
       subscribers: [
           "subscriber/*.js"

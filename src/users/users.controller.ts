@@ -9,6 +9,7 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { DeleteUserDto } from './dtos/delete-user.dto';
 import { ListUserDto } from './dtos/list-user.dto';
 import { LoginUserDto } from './dtos/login-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
 import { UsersService } from './users.service';
 
@@ -34,6 +35,14 @@ export class UsersController {
       @ApiRequestPayload(UserDto, PaginatedRequestDto)
       async addUser(@Body() userDto: CreateUserDto): Promise<PaginatedDto<User>> {
         return this.userService.createUser(userDto)
+      }
+
+      @Post('/updateUser')
+      @HttpCode(200)
+      @ApiPaginatedResponse(ListUserDto, PaginatedDto, ResponseDto)
+      @ApiRequestPayload(UserDto, PaginatedRequestDto)
+      async updateUser(@Body() updateUserDto: UpdateUserDto): Promise<PaginatedDto<User>> {
+        return this.userService.updateUser(updateUserDto)
       }
 
       @Post('/login')
