@@ -11,21 +11,23 @@ import { JwtConfigService } from 'src/common_services/jwt-config-service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { DeleteUserDto } from './dtos/delete-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { Role } from 'src/entity/Role';
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectRepository(User)
         private _userRepository: Repository<User>,
+        @InjectRepository(Role)
+        private _roleRepository: Repository<Role>,
         private jwtService: JwtService,
         private jwtConfigService: JwtConfigService
     ){}
     
     async findAll(listUserDto: PaginatedRequestDto<ListUserDto>): Promise<any> {
         const queryBuilder = this._userRepository.createQueryBuilder()
-                                .select(["us.uid as uid","us.name as name","us.username as username","role.role_title"])
-                                .from("users", "us")
-                                .innerJoinAndSelect("roles", "role","role.role_id = us.role_id");
+                                .select(["uid as uid","name as name","username as username","role.role_title"])
+                                .innerJoinAndSelect("roles", "role","role.role_id = user.role_id");
         const itemCount = await queryBuilder.getCount();
         let  entities  = await queryBuilder.getRawMany();
         return entities;
@@ -97,5 +99,13 @@ export class UsersService {
                             .where("uid = :id", { id: deleteUserDto?.uid })
                             .execute()
         return deletedUser;
+    }
+
+    async findAllRoles(listUserDto: PaginatedRequestDto<ListUserDto>): Promise<any> {
+        const queryBuilder = this._roleRepository.createQueryBuilder()
+                                // .select(["r.role_id as role_id","r.role_title as role_title"])
+        const itemCount = await queryBuilder.getCount();
+        let  { entities }  = await queryBuilder.getRawAndEntities();
+        return entities;
     }
 }

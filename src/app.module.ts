@@ -12,6 +12,7 @@ import { JwtConfigService } from './common_services/jwt-config-service';
 import { OrdersModule } from './orders/orders.module';
 import { Order } from './entity/Order';
 import { RoleAction } from './entity/RoleAction';
+import { Role } from './entity/Role';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { RoleAction } from './entity/RoleAction';
       logging: true,
       synchronize: false,
       entities: [
-          User, Order, RoleAction
+          User, Order, RoleAction, Role
       ],
       subscribers: [
           "subscriber/*.js"

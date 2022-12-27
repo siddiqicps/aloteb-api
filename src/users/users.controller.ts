@@ -61,4 +61,12 @@ export class UsersController {
         return this.userService.deleteUser(deleteUserDto)
       }
 
+      @Post('/getRoles')
+      @HttpCode(200)
+      // @ApiPaginatedResponse(ListUserDto, PaginatedDto, ResponseDto)
+      @ApiRequestPayload(UserDto, PaginatedRequestDto)
+      async getRoles(@Body() listUserDto: PaginatedRequestDto<ListUserDto>): Promise<PaginatedDto<any>> {
+        return this.userService.findAllRoles(listUserDto)
+      }
+
 }
